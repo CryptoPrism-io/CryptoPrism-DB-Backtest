@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\cpio_db\\backtest-repo\")",
+      "Bash(dir /S \"C:\\cpio_db\\backtest-repo\" /B)",
+      "Bash(findstr:*)",
+      "Bash(python -m src.backtest:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(python:*)",
+      "Bash(awk:*)",
+      "Bash(dir:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
