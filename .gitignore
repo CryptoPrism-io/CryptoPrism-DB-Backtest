@@ -30,3 +30,6 @@ logs/
 *.iml
 .DS_Store
 Thumbs.db
+
+# Claude Code settings (local)
+.claude/
