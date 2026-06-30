@@ -35,7 +35,7 @@ def load_data(con, start, end, prices_table: str, signals_table: str, ratios_tab
     px = pd.read_sql(
         f"""
         SELECT timestamp, slug, close
-        FROM {prices_table}
+        FROM "{prices_table}"
         WHERE timestamp >= %(s)s AND timestamp < %(e)s
         """,
         con,
