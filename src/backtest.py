@@ -249,12 +249,12 @@ def run_vbt(close, bullish, bearish, strategy=None, ratios=None):
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Vectorbt backtest against cp_backtest_h (strict)")
+    p = argparse.ArgumentParser(description="Vectorbt backtest against cp_backtest (daily, full FE_* history)")
     p.add_argument("--start", type=str, help="UTC start datetime, e.g. 2025-02-13 00:00:00")
     p.add_argument("--end", type=str, help="UTC end datetime, e.g. 2025-11-04 06:00:00")
     p.add_argument("--days", type=int, default=int(os.getenv("BBACKTEST_DAYS", "30")), help="If no start/end, use last N days")
-    p.add_argument("--db-name", type=str, default=os.getenv("DB_NAME_BT", "cp_backtest_h"))
-    p.add_argument("--prices-table", type=str, default="ohlcv_1h_250_coins")
+    p.add_argument("--db-name", type=str, default=os.getenv("DB_NAME_BT", "cp_backtest"))
+    p.add_argument("--prices-table", type=str, default="1K_coins_ohlcv")
     p.add_argument("--signals-table", type=str, default="FE_DMV_ALL")
     p.add_argument("--strategy", type=str, default=None, help="Strategy name to use (default: DMV signals)")
     p.add_argument("--coin", type=str, default=None, help="Filter to single coin slug (e.g., bitcoin)")
