@@ -230,13 +230,23 @@ def run_vbt(close, bullish, bearish, strategy=None, ratios=None):
             entries, exits = signals
             # Keep short_entries and short_exits as None for long-only strategies
 
+    # Infer the bar frequency from the price index so stats annualize correctly
+    # (daily cp_backtest vs hourly cp_backtest_h). Defaults to daily.
+    freq = '1D'
+    try:
+        if len(close.index) >= 2:
+            median_delta = pd.Series(close.index).diff().dropna().median()
+            freq = '1h' if median_delta.total_seconds() <= 5400 else '1D'
+    except Exception:
+        freq = '1D'
+
     # Build kwargs for Portfolio.from_signals
     pf_kwargs = {
         'init_cash': 100_000,
         'fees': 0.001,
         'slippage': 0.0005,
         'cash_sharing': True,
-        'freq': '1h'
+        'freq': freq
     }
 
     # Add short positions if strategy provides them
