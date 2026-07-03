@@ -28,7 +28,7 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_NAME_BT: ${{ secrets.DB_NAME_BT }}
         run: |
-          python -m src.backtest --days 30 --db-name ${{ env.DB_NAME_BT }} --prices-table ohlcv_1h_250_coins --signals-table FE_DMV_ALL > backtest_stats.txt
+          python -m src.backtest --days 30 --db-name ${{ env.DB_NAME_BT }} --prices-table 1K_coins_ohlcv --signals-table FE_DMV_ALL > backtest_stats.txt
       - name: Upload stats artifact
         uses: actions/upload-artifact@v4
         with:

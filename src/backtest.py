@@ -35,7 +35,7 @@ def load_data(con, start, end, prices_table: str, signals_table: str, ratios_tab
     px = pd.read_sql(
         f"""
         SELECT timestamp, slug, close
-        FROM {prices_table}
+        FROM "{prices_table}"
         WHERE timestamp >= %(s)s AND timestamp < %(e)s
         """,
         con,
@@ -230,13 +230,23 @@ def run_vbt(close, bullish, bearish, strategy=None, ratios=None):
             entries, exits = signals
             # Keep short_entries and short_exits as None for long-only strategies
 
+    # Infer the bar frequency from the price index so stats annualize correctly
+    # (daily cp_backtest vs hourly cp_backtest_h). Defaults to daily.
+    freq = '1D'
+    try:
+        if len(close.index) >= 2:
+            median_delta = pd.Series(close.index).diff().dropna().median()
+            freq = '1h' if median_delta.total_seconds() <= 5400 else '1D'
+    except Exception:
+        freq = '1D'
+
     # Build kwargs for Portfolio.from_signals
     pf_kwargs = {
         'init_cash': 100_000,
         'fees': 0.001,
         'slippage': 0.0005,
         'cash_sharing': True,
-        'freq': '1h'
+        'freq': freq
     }
 
     # Add short positions if strategy provides them
@@ -249,12 +259,12 @@ def run_vbt(close, bullish, bearish, strategy=None, ratios=None):
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Vectorbt backtest against cp_backtest_h (strict)")
+    p = argparse.ArgumentParser(description="Vectorbt backtest against cp_backtest (daily, full FE_* history)")
     p.add_argument("--start", type=str, help="UTC start datetime, e.g. 2025-02-13 00:00:00")
     p.add_argument("--end", type=str, help="UTC end datetime, e.g. 2025-11-04 06:00:00")
     p.add_argument("--days", type=int, default=int(os.getenv("BBACKTEST_DAYS", "30")), help="If no start/end, use last N days")
-    p.add_argument("--db-name", type=str, default=os.getenv("DB_NAME_BT", "cp_backtest_h"))
-    p.add_argument("--prices-table", type=str, default="ohlcv_1h_250_coins")
+    p.add_argument("--db-name", type=str, default=os.getenv("DB_NAME_BT", "cp_backtest"))
+    p.add_argument("--prices-table", type=str, default="1K_coins_ohlcv")
     p.add_argument("--signals-table", type=str, default="FE_DMV_ALL")
     p.add_argument("--strategy", type=str, default=None, help="Strategy name to use (default: DMV signals)")
     p.add_argument("--coin", type=str, default=None, help="Filter to single coin slug (e.g., bitcoin)")
