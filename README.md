@@ -616,3 +616,5 @@ For questions or issues:
 [GitHub](https://github.com/CryptoPrism-io/CryptoPrism-DB-Backtest) • [Docs](docs/ANALYSIS_INDEX.md) • [Changelog](CHANGELOG.md)
 
 </div>
+
+_Last reviewed: 2026-10-16_
