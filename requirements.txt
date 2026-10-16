@@ -1,4 +1,5 @@
 vectorbt==0.28.1
+plotly<6  # vectorbt 0.28.1 sets a scattermapbox template that plotly 6 rejects (ValueError on import)
 pandas
 numpy
 sqlalchemy
